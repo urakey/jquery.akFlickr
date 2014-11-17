@@ -16,51 +16,13 @@
      */
     options = $.extend({
       api_key: '',
-      size: 'thumbnail',
+      size: 'medium',
       searchOptions: {},
       link: true,
       tag: 'div',
       className: ''
     }, options);
 
-    // MEMO: options.data 検索オプション（★がデフォルト値）
-
-    // ■ text - フリーワード全文検索
-    // ■ user_id - 写真投稿者ユーザーID
-    // ■ tags - タグ
-    // ■ per_page - 検索1回あたりの取得件数（デフォルト 100）
-    // ■ page - 出力ページ番号
-
-    // ■ tag_mode - 複数指定時の検索モード
-    // ★ any OR検索
-    // all AND検索
-
-    // ■ min_upload_date - アップロード日時（最小値＝最も古い）絞込み
-    // ■ min_taken_date 撮影日時（最大値＝最も古い）絞込み
-    // ■ max_taken_date 撮影日時（最大値＝最も新しい）絞込み
-
-    // ■ bbox - エリア
-    // 西端の経度、南端の緯度、東端の経度、北端の緯度の値をカンマ区切りで並べる（東経・北緯を正の値とする）。
-    // （例）　139.70,35.61,139.78,35.74
-
-    // ■ sort - 並べ替え
-    // ★ date-posted-desc アップロード日時の新しい順
-    // date-posted-asc アップロード日時の古い順
-    // date-taken-asc  撮影日時の古い順
-    // date-taken-desc 撮影日時の新しい順
-    // interestingness-desc  人気の高い順
-    // interestingness-asc 人気の低い順
-    // relevance 関連度の高い順
-
-    // ■ extras 追加出力項目（カンマ区切り）
-    // license ライセンス種別
-    // date_upload アップロード日時
-    // date_taken  撮影日時
-    // owner_name  投稿者名
-    // icon_server アイコンサーバー
-    // original_format アップロード時のフォーマット
-    // last_update 更新日時
-    // geo 緯度経度
 
     /**
      * Core
@@ -68,51 +30,123 @@
     return this.each(function()
     {
       var $target = $(this);
-      loadPhotos($target, options);
+      var suffix = setPhotoSuffix(options.size);
+      loadPhotos($target, options, suffix);
     });
 
     /**
      * Method - private
      */
-    function loadPhotos($dom, options) {
+    function loadPhotos($dom, options, suffix) {
       var d    = $.Deferred();
       var data = {
-        api_key: options.api_key,
+        format: 'json',
         method: 'flickr.photos.search',
-        format: 'json'
+        api_key: options.api_key
       };
 
       if (options.searchOptions) data = $.extend(data, options.searchOptions);
-      console.log(data);
 
       $.ajax({
         type: 'GET',
         url: 'https://www.flickr.com/services/rest/',
+        data: data,
         dataType: 'jsonp',
-        jsonp: 'jsoncallback',
-        data: data
+        jsonp: 'jsoncallback'
       })
       .done(function(data) {
-        if (data.stat == 'ok') appendHtml($dom, formatHtml(data, options));
+        if (data.stat == 'ok') {
+          if(data.photos.length <= 0) return;
+          appendHtml($dom, formatHtml(data, options, suffix));
+        }
         d.resolve();
       })
-      .fail(function(e) {
-        console.log(e);
+      .fail(function(xhr, status, error) {
+        console.log(xhr, status, error);
       });
       return d.promise();
     }
 
-    function formatHtml(data, options) {
-      var items   = data.photos.photo;
-      console.log(items);
+    function formatHtml(data, options, suffix) {
+      var photos = data.photos;
+      var htmlTag = options.tag;
+      var id, owner, secret, server, farm, title, ispublic, isfriend, isfamily;
+      var link, imgPath, tmpHtmlSrc;
+      var htmlSrc = '';
+
+      $.each(photos.photo, function(index, item){
+        id       = item.id;
+        owner    = item.owner;
+        secret   = item.secret;
+        server   = item.server;
+        farm     = item.farm;
+        title    = item.title;
+        ispublic = item.ispublic;
+        isfriend = item.isfriend;
+        isfamily = item.isfamily;
+
+        link = 'http://www.flickr.com/photos/' + owner + '/' + id + '/';
+        imgPath = 'http://farm' + farm + '.static.flickr.com/' + server + '/' + id + '_' + secret + suffix + '.jpg';
+
+        // MEMO: DOM は自由に作れたほうがいい？あとで検討する
+        if (options.className) tmpHtmlSrc  = '<' + htmlTag + ' class="' + options.className + '">';
+        else tmpHtmlSrc  = '<' + htmlTag + '>';
+
+        if (options.link && link) tmpHtmlSrc += '<a href="' + link + '" target="_blank">';
+
+        tmpHtmlSrc += '<img src="' + imgPath + '" alt="' + title + '">';
+
+        if (options.link && link) tmpHtmlSrc += '</a>';
+        tmpHtmlSrc += '</' + htmlTag + '>';
+
+        htmlSrc += tmpHtmlSrc;
+      });
+
+      return htmlSrc;
     }
 
-    function appendHtml($dom, htmlSrcArray) {
+    function appendHtml($dom, htmlSrc) {
+      if(!htmlSrc) return;
+      $dom.append(htmlSrc);
+    }
 
-      // if(htmlSrcArray.length <= 0) return;
-      // $.each(htmlSrcArray, function(index, htmlSrc){
-      //   $dom.append(htmlSrc);
-      // });
+    function setPhotoSuffix(size) {
+      var suffix;
+
+      switch(size) {
+        case 'square':
+          suffix = '_s';
+          break;
+        case 'large_square':
+          suffix = '_q';
+          break;
+        case 'thumbnail':
+          suffix = '_t';
+          break;
+        case 'small':
+          suffix = '_m';
+          break;
+        case 'small_320':
+          suffix = '_n';
+          break;
+        case 'medium_640':
+          suffix = '_z';
+          break;
+        case 'medium_800':
+          suffix = '_c';
+          break;
+        case 'large':
+          suffix = '_b';
+          break;
+        case 'original':
+          suffix = '_o';
+          break;
+        default:
+          suffix = '';
+          break;
+      }
+
+      return suffix;
     }
 
   };
