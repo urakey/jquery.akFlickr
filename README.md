@@ -95,7 +95,7 @@
           <li><code>text: 'フリーワード'</code> - フリーワード全文検索</li>
           <li><code>tags: 'タグ'</code> - タグ</li>
         </ul>
-        <p>※ <code>text</code> <code>tags</code> の複数指定はカンマ区切り</p>
+        <p>※ <code>tags</code> の複数指定はカンマ区切り</p>
         <h4>その他の検索条件等</h4>
         <p>※ ★はデフォルト</p>
         <h5>複数指定時の検索モード</h5>
