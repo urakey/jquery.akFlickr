@@ -18,6 +18,7 @@
       api_key: '',
       size: 'medium',
       link: true,
+      count: 20,
       tag: 'div',
       className: ''
     }, options);
@@ -41,7 +42,8 @@
       var data = {
         format: 'json',
         method: 'flickr.photos.search',
-        api_key: options.api_key
+        api_key: options.api_key,
+        per_page: options.count
       };
 
       if (options.searchOptions) data = $.extend(data, options.searchOptions);
