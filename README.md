@@ -112,7 +112,7 @@
         <p>※ YYYY-MM-DD もしくは UNIX タイムスタンプで指定</p>
         <h5>ライセンスで絞り込む</h5>
         <p><code>license: 'LICENSE_ID'</code> - LICENSE_ID をカンマ区切りで指定</p>
-        <p>※ [LICENSE_IDはこちら](https://www.flickr.com/services/api/flickr.photos.licenses.getInfo.html)</p>
+        <p>※ <a href="https://www.flickr.com/services/api/flickr.photos.licenses.getInfo.html" target="_blank">LICENSE_IDはこちら</a></p>
         <h5>並べ替え</h5>
         <ul>
           <li><code>sort: 'date-posted-desc'</code> - アップロード日時の新しい順 ★</li>
