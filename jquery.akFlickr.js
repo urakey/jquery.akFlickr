@@ -16,9 +16,9 @@
      */
     options = $.extend({
       api_key: '',
-      size: 'medium',
       link: true,
       count: 20,
+      size: 'medium',
       tag: 'div',
       className: ''
     }, options);
