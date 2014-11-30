@@ -17,7 +17,9 @@
     options = $.extend({
       api_key: '',
       size: 'medium',
-      searchOptions: {},
+      searchOptions: {
+        per_page: 20
+      },
       link: true,
       tag: 'div',
       className: ''
