@@ -95,7 +95,7 @@
           <li><code>text: 'フリーワード'</code> - フリーワード全文検索</li>
           <li><code>tags: 'タグ'</code> - タグ</li>
         </ul>
-        <p>※ <code>text</code> <code>tags</code> の複数指定はカンマ区切り</p>
+        <p>※ <code>tags</code> の複数指定はカンマ区切り</p>
         <h4>その他の検索条件等</h4>
         <p>※ ★はデフォルト</p>
         <h5>複数指定時の検索モード</h5>
@@ -112,7 +112,7 @@
         <p>※ YYYY-MM-DD もしくは UNIX タイムスタンプで指定</p>
         <h5>ライセンスで絞り込む</h5>
         <p><code>license: 'LICENSE_ID'</code> - LICENSE_ID をカンマ区切りで指定</p>
-        <p>※ [LICENSE_IDはこちら](https://www.flickr.com/services/api/flickr.photos.licenses.getInfo.html)</p>
+        <p>※ <a href="https://www.flickr.com/services/api/flickr.photos.licenses.getInfo.html" target="_blank">LICENSE_IDはこちら</a></p>
         <h5>並べ替え</h5>
         <ul>
           <li><code>sort: 'date-posted-desc'</code> - アップロード日時の新しい順 ★</li>
